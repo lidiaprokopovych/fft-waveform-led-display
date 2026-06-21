@@ -73,15 +73,24 @@ void ht1632_init(void) {
 void ht1632_set_amplitude(uint8_t column, uint8_t mag) {
 		if (mag > 8) mag = 8;
 		uint16_t mask = (1 << mag) - 1;
-		ht1632_write_ram(column*2, mask & (0b1111));
-		ht1632_write_ram(column*2 + 1, mask >> 4);
+
+		uint16_t lower_mask = 0; // = mask & 0b1111;
+		uint16_t upper_mask = 0; // = mask & (0b1111 << 4);
+		for (int i = 0; i < 4; i++) {
+			if (mask & (1 << i)) lower_mask |= (1 << (3-i));
+			if (mask & (1 << (i + 4))) upper_mask |= (1<<(3-i));
+		}
+
+		ht1632_write_ram(column, lower_mask);
+		ht1632_write_ram(column + 1, upper_mask);
+
 }
 
 int main(void) {
     ht1632_init();
     // Light up all LEDs at address 0x00
     for (uint8_t i = 0; i < 32; i+=2) {
-				ht1632_set_amplitude(i, 1);
+				ht1632_set_amplitude(i, 6);
 				_delay_ms(1000);	 	
         ht1632_set_amplitude(i, 0);
 		}
