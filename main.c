@@ -4,6 +4,8 @@
 #define SET_ONE(port, pin) (port |= (1 << pin))
 #define SET_ZERO(port, pin) (port &= ~(1<< pin))
 #define F_CPU 16000000UL
+
+#include <avr/io.h>
 #include <stdint.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -86,31 +88,12 @@ void ht1632_set_amplitude(uint8_t column, uint8_t mag) {
 
 }
 
-#define BAUD 9600
-#define UBRR_VAL (F_CPU/16/BAUD - 1)
-
-void uart_init(void) {
-    UBRR0H = (UBRR_VAL >> 8);
-    UBRR0L = UBRR_VAL;
-    UCSR0B = (1 << RXEN0) | (1 << TXEN0);
-    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00); // 8-bit
-}
-
-uint8_t uart_read(void) {
-    while (!(UCSR0A & (1 << RXC0))); // wait for byte
-    return UDR0;
-}
 
 int main(void) {
     ht1632_init();
 
-    uart_init();
-
     while (1) {
         // expect 2 bytes: column, magnitude
-        uint8_t col = uart_read();
-        uint8_t mag = uart_read();
-        ht1632_set_amplitude(col, mag);
     }
 
 }

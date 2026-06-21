@@ -6,5 +6,5 @@ ser = serial.Serial('/dev/tty.usbmodem1101', 115200)  # or COM3 on Windows
 
 # light up each column
 for col in range(16):
-    ser.write(bytes([col, 6]))  # column, magnitude
+    ser.write(bytes([col, 3]))
     time.sleep(0.1)
