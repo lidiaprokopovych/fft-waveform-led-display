@@ -89,7 +89,7 @@ void ht1632_set_amplitude(uint8_t column, uint8_t mag) {
 }
 
 
-int main(void) {
+int ain(void) {
     ht1632_init();
 
     while (1) {
