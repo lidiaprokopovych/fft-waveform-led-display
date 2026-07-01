@@ -5,8 +5,14 @@
  * Hardware abstraction
  * ----------------------------------------------------------------------- */
 #define access(A)           (*((volatile unsigned char*)A))
+
+#ifndef PORTB
 #define PORTB               (access(0x25))
+#endif
+
+#ifndef DDRB
 #define DDRB                (access(0x24))
+#endif
 
 #define SET_ONE(port, pin)  (port |=  (1 << (pin)))
 #define SET_ZERO(port, pin) (port &= ~(1 << (pin)))
